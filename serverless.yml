@@ -44,8 +44,8 @@ provider:
       # These will also be merged into the generated IAM Role
       managedPolicies:
         - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-        - "arn:aws:iam::aws:policy/service-role/AWSLambda_ReadOnlyAccess"
-        - "arn:aws:iam::aws:policy/service-role/AWSXrayWriteOnlyAccess"
+        #- "arn:aws:iam::aws:policy/service-role/AWSLambda_ReadOnlyAccess"
+        #- "arn:aws:iam::aws:policy/service-role/AWSXrayWriteOnlyAccess"
       statements:
         - Effect: Allow
           Action:
