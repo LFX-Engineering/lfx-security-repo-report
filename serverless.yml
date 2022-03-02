@@ -1,8 +1,9 @@
 # Copyright The Linux Foundation and each contributor to LFX.
 # SPDX-License-Identifier: MIT
 
-service: lfx-security-ossf-scanner
-frameworkVersion: '^2.57.0'
+service: lfx-security-repo-report
+frameworkVersion: '^3.5.1'
+configValidationMode: warn
 variablesResolutionMode: 20210326
 
 package:
@@ -10,23 +11,16 @@ package:
   # Support for "package.include" and "package.exclude" will be removed with next major release. Please use "package.patterns" instead
   # More Info: https://www.serverless.com/framework/docs/deprecations/#NEW_PACKAGE_PATTERNS
   patterns:
-    - '!auth/**'
-    - '!bin/*'
-    - '!dev.sh'
     - '!docs/**'
-    - '!helpers/**'
-    - '!Makefile'
     - '!.env/**'
-    - '!.venv/**'
     - '!.git*'
     - '!.git/**'
     - '!.vscode/**'
-    - '!.pylintrc'
     - '!node_modules/**'
     - '!package-lock.json'
     - '!yarn.lock'
     - '.serverless-wsgi'
-    - '*.py'
+    - '*.js'
 
 custom:
   # Config for serverless-prune-plugin - remove all but the 10 most recent
@@ -37,12 +31,12 @@ custom:
 
 provider:
   name: aws
-  runtime: python3.9
+  runtime: nodejs12.x
   stage: ${env:STAGE}
   region: us-east-2
   timeout: 900 # 15 minutes
-  logRetentionInDays: 14
-  lambdaHashingVersion: '20201221' # Resolution of lambda version hashes was improved with better algorithm, which will be used in next major release. Switch to it now by setting "provider.lambdaHashingVersion" to "20201221"
+  logRetentionInDays: 30 # must match one of the CF enum values {1, 3, 5, 7, 14, 30, 60, 90, ...}
+  lambdaHashingVersion: '20201221'  # Resolution of lambda version hashes was improved with better algorithm, which will be used in next major release. Switch to it now by setting "provider.lambdaHashingVersion" to "20201221" More Info: https://www.serverless.com/framework/docs/deprecations/#LAMBDA_HASHING_VERSION_V2
 
   iam:
     role:
@@ -50,6 +44,8 @@ provider:
       # These will also be merged into the generated IAM Role
       managedPolicies:
         - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        - "arn:aws:iam::aws:policy/service-role/AWSLambda_ReadOnlyAccess"
+        - "arn:aws:iam::aws:policy/service-role/AWSXrayWriteOnlyAccess"
       statements:
         - Effect: Allow
           Action:
@@ -70,8 +66,6 @@ provider:
     AUTH0_PLATFORM_CLIENT_ID: ${env:AUTH0_PLATFORM_CLIENT_ID}
     AUTH0_PLATFORM_CLIENT_SECRET: ${env:AUTH0_PLATFORM_CLIENT_SECRET}
     AUTH0_PLATFORM_AUDIENCE: ${env:AUTH0_PLATFORM_AUDIENCE}
-    # Logging format, text or json
-    LOG_FORMAT: json
 
   stackTags:
     Name: ${self:service}
@@ -82,7 +76,7 @@ provider:
     SericeType: "Product"
     Service: ${self:service}
     ServiceRole: "Backend"
-    ProgrammingPlatform: Python
+    ProgrammingPlatform: NodeJS
     Owner: "David Deal"
   tags:
     Name: ${self:service}
@@ -93,21 +87,17 @@ provider:
     SericeType: "Product"
     Service: ${self:service}
     ServiceRole: "Backend"
-    ProgrammingPlatform: Python
+    ProgrammingPlatform: NodeJS
     Owner: "David Deal"
 
 plugins:
-  - serverless-python-requirements
   - serverless-plugin-tracing
-  # Serverless Finch does s3 uploading. Called with 'sls client deploy'.
-  # Also allows bucket removal with 'sls client remove'.
-  - serverless-finch
   # To avoid a Code Storage Limit after tons of deploys and revisions - we can prune old versions
   # This plugin allows us to remove/prune the old versions either manually or automatically
   - serverless-prune-plugin
 
 functions:
-  lfx-security-ossf-scanner:
-    name: lfx-security-ossf-scanner
-    handler: main.lambda_handler
-    description: "LFX Security OSSF Repository Scanner"
+  lfx-security-repo-report:
+    name: lfx-security-repo-report
+    handler: index.handler
+    description: "LFX Security Repository Reporting Tool"

@@ -1,0 +1,23 @@
+{
+  "name": "lfx-security-repo-report",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "aws-sdk": "2.1085.0",
+    "jest": "27.5.1"
+  },
+  "dependencies": {
+    "aws-xray-sdk-core": "3.3.4",
+    "repo-report": "0.1.3",
+    "serverless": "^3.5.1",
+    "serverless-layers": "^2.5.3",
+    "serverless-plugin-tracing": "^2.0.0",
+    "serverless-prune-plugin": "^2.0.1"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "resolutions": {
+    "glob-parent": "^5.1.2"
+  }
+}

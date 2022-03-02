@@ -1,0 +1,41 @@
+---
+# Copyright The Linux Foundation and each contributor to LFX.
+# SPDX-License-Identifier: MIT
+
+name: Yarn Dependency Audit
+
+on:
+  # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Setup
+        run: |
+          echo "Node version is: $(node --version)"
+          echo "Yarn version is: $(yarn --version)"
+          echo "Running top level install..."
+          yarn install
+      - name: Yarn Audit
+        run: yarn audit
+      - uses: ravsamhq/notify-slack-action@v1
+        if: always()
+        with:
+          status: ${{ job.status }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          notification_title: '{workflow} has {status_message}'
+          message_format: '{emoji} {workflow} {status_message} for repository <{repo_url}|{repo}@{branch}> on <{commit_url}|{commit_sha}>'
+          footer: 'Repository: <{repo_url}|{repo}> | <{workflow_url}|View Workflow>'
+          mention_users: 'UH8CHEUQL,UNLDL97LZ'
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
