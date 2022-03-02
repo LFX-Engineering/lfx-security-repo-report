@@ -2,6 +2,17 @@
   "name": "lfx-security-repo-report",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "test": "jest",
+    "sls": "./node_modules/serverless/bin/serverless.js",
+    "deploy:dev": "SLS_DEBUG=* ./node_modules/serverless/bin/serverless.js deploy -s dev -r us-east-2 --verbose",
+    "remove:dev": "SLS_DEBUG=* ./node_modules/serverless/bin/serverless.js remove -s dev -r us-east-2 --verbose",
+    "prune:dev": "SLS_DEBUG=* time ./node_modules/serverless/bin/serverless.js prune -n 10 -s dev -r us-east-2 --verbose",
+    "package": "SLS_DEBUG=* ./node_modules/serverless/bin/serverless.js package -s dev -r us-east-2 --verbose",
+    "prune:prod": "SLS_DEBUG=* time ./node_modules/serverless/bin/serverless.js prune -n 10 -s prod -r us-east-2 --verbose",
+    "deploy:prod": "SLS_DEBUG=* ./node_modules/serverless/bin/serverless.js deploy -s prod -r us-east-2 --verbose",
+    "remove:prod": "SLS_DEBUG=* ./node_modules/serverless/bin/serverless.js remove -s prod -r us-east-2 --verbose"
+  },
   "devDependencies": {
     "aws-sdk": "2.1085.0",
     "jest": "27.5.1"
@@ -13,9 +24,6 @@
     "serverless-layers": "^2.5.3",
     "serverless-plugin-tracing": "^2.0.0",
     "serverless-prune-plugin": "^2.0.1"
-  },
-  "scripts": {
-    "test": "jest"
   },
   "resolutions": {
     "glob-parent": "^5.1.2"
