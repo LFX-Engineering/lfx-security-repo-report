@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
+    "repo-report": "./node_modules/repo-report/bin/run",
     "sls": "./node_modules/serverless/bin/serverless.js",
     "deploy:dev": "SLS_DEBUG=* ./node_modules/serverless/bin/serverless.js deploy -s dev -r us-east-2 --verbose",
     "remove:dev": "SLS_DEBUG=* ./node_modules/serverless/bin/serverless.js remove -s dev -r us-east-2 --verbose",
@@ -15,15 +16,16 @@
   },
   "devDependencies": {
     "aws-sdk": "2.1085.0",
-    "jest": "27.5.1"
-  },
-  "dependencies": {
-    "aws-xray-sdk-core": "3.3.4",
-    "repo-report": "0.1.3",
+    "jest": "27.5.1",
     "serverless": "^3.5.1",
     "serverless-layers": "^2.5.3",
     "serverless-plugin-tracing": "^2.0.0",
     "serverless-prune-plugin": "^2.0.1"
+  },
+  "dependencies": {
+    "aws-xray-sdk-core": "3.3.4",
+    "child_process": "^1.0.2",
+    "repo-report": "0.1.3"
   },
   "resolutions": {
     "glob-parent": "^5.1.2"

@@ -16,11 +16,8 @@ package:
     - '!.git*'
     - '!.git/**'
     - '!.vscode/**'
-    - '!node_modules/**'
-    - '!package-lock.json'
-    - '!yarn.lock'
-    - '.serverless-wsgi'
-    - '*.js'
+    - 'node_modules/**'
+    - 'index.js'
 
 custom:
   # Config for serverless-prune-plugin - remove all but the 10 most recent
@@ -32,7 +29,6 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: ${env:STAGE}
   region: us-east-2
   timeout: 900 # 15 minutes
   logRetentionInDays: 30 # must match one of the CF enum values {1, 3, 5, 7, 14, 30, 60, 90, ...}
